@@ -19,7 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "spi.h"
-#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -35,6 +34,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+extern uint8_t CDC_Transmit_FS (uint8_t *data, uint16_t);
 
 /* USER CODE END PD */
 
@@ -90,18 +90,30 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USB_DEVICE_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
+  for (int i = 0; i < 5; i++) {
+	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
+	  HAL_Delay(100);
+	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
+	  HAL_Delay(100);
+  }
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  HAL_Delay(200);
+  resetScreen();
   initializeScreen();
   while (1)
   {
+	  drawEllipseFilled(240, 160, 30, 50, 0x0f0a);
+	  HAL_Delay(200);
+	  drawRectangleFilled(50, 50, 40, 60, 0xf00f);
+	  HAL_Delay(200);
+	  drawRectangleFilled(20, 20, 300, 200, 0xff00);
+	  HAL_Delay(200);
+//	  CDC_Transmit_FS (status, sizeof(status));
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

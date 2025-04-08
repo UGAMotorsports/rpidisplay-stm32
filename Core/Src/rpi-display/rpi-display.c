@@ -253,29 +253,29 @@ void drawEllipseOutline(uint16_t x, uint16_t y, uint16_t length, uint16_t height
 	}
 }
 
-void drawCharacter(char letter, GFXfont* font, uint16_t xpos, uint16_t ypos) {
-	GFXglyph *toDraw = &((font->glyph)[letter - 32]);
-	uint8_t width = toDraw->width, height = toDraw->height;
-	uint8_t xo = toDraw->xOffset, yo = toDraw->yOffset;
-	uint8_t bitlist[] = font->bitmap;
-
-	uint16_t bo = toDraw->bitmapOffset;
-	uint8_t atbit = 0;
-	uint8_t atbyte = bitlist[bo];
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			if (!(atbit & 7)) {
-				bo++;
-				atbyte = bitlist[bo];
-			}
-			if (bitlist[atbyte] & 128) {
-				drawPoint(x + xo + xpos, y + yo + ypos, 0xFFFF);
-			}
-			atbit++;
-			atbyte <<= 1;
-		}
-	}
-}
+//void drawCharacter(char letter, GFXfont* font, uint16_t xpos, uint16_t ypos) {
+//	GFXglyph *toDraw = &((font->glyph)[letter - 32]);
+//	uint8_t width = toDraw->width, height = toDraw->height;
+//	uint8_t xo = toDraw->xOffset, yo = toDraw->yOffset;
+//	uint8_t bitlist[] = font->bitmap;
+//
+//	uint16_t bo = toDraw->bitmapOffset;
+//	uint8_t atbit = 0;
+//	uint8_t atbyte = bitlist[bo];
+//	for (int y = 0; y < height; y++) {
+//		for (int x = 0; x < width; x++) {
+//			if (!(atbit & 7)) {
+//				bo++;
+//				atbyte = bitlist[bo];
+//			}
+//			if (bitlist[atbyte] & 128) {
+//				drawPoint(x + xo + xpos, y + yo + ypos, 0xFFFF);
+//			}
+//			atbit++;
+//			atbyte <<= 1;
+//		}
+//	}
+//}
 
 
 
