@@ -18,3 +18,4 @@
 ../Core/Src/rpi-display/rpi-display.c:213:5:checkPointInEllipse	40	static
 ../Core/Src/rpi-display/rpi-display.c:223:6:drawEllipseFilled	72	static
 ../Core/Src/rpi-display/rpi-display.c:237:6:drawEllipseOutline	64	static
+../Core/Src/rpi-display/rpi-display.c:256:6:drawChar	48	static

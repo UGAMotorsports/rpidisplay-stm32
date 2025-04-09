@@ -23,7 +23,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 #include "rpi-display/rpi-display.h"
+#include "rpi-display/FreeMono18pt7b.h"
 
 /* USER CODE END Includes */
 
@@ -112,6 +114,11 @@ int main(void)
 	  drawRectangleFilled(50, 50, 40, 60, 0xf00f);
 	  HAL_Delay(200);
 	  drawRectangleFilled(20, 20, 300, 200, 0xff00);
+	  HAL_Delay(200);
+	  for (int i = 0; i < 10; i++) {
+		  drawChar(66 + i, &FreeMono18pt7b, 50 + (i * 20), 50);
+	  }
+
 	  HAL_Delay(200);
 //	  CDC_Transmit_FS (status, sizeof(status));
     /* USER CODE END WHILE */
