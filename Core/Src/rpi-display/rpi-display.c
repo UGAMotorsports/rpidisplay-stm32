@@ -11,9 +11,9 @@
 
 #include "gfxfont.h"
 
-
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 480
+
 
 void startTransaction() {
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
@@ -253,41 +253,26 @@ void drawEllipseOutline(uint16_t x, uint16_t y, uint16_t length, uint16_t height
 	}
 }
 
-void drawChar(char letter, GFXfont* font, uint16_t xpos, uint16_t ypos) {
+void drawChar(char letter, const GFXfont* font, int16_t xpos, int16_t ypos, uint8_t flip) {
 	GFXglyph *toDraw = &((font->glyph)[letter - 32]);
-	uint8_t width = toDraw->width, height = toDraw->height;
-	uint8_t xo = toDraw->xOffset, yo = toDraw->yOffset;
+	int8_t width = toDraw->width, height = toDraw->height;
+	int8_t xo = toDraw->xOffset, yo = toDraw->yOffset;
 	uint8_t *bitlist = font->bitmap;
-
-
 	uint16_t bo = toDraw->bitmapOffset;
-
 	uint8_t bits = 0;
 	uint8_t bit = 0;
 
-//	uint8_t atbit = 0;
-//	uint8_t atbyte = bitlist[bo];
-//	for (int y = 0; y < height; y++) {
-//		for (int x = 0; x < width; x++) {
-//			if (!(atbit & 7)) {
-//				bo++;
-//				atbyte = bitlist[bo];
-//			}
-//			if (bitlist[atbyte] & 128) {
-//				drawPoint(x + xo + xpos, y + yo + ypos, 0xFFFF);
-//			}
-//			atbit++;
-//			atbyte <<= 1;
-//		}
-//	}
-//
 	for (int yy = 0; yy < height; yy++) {
 	  for (int xx = 0; xx < width; xx++) {
 		if (!(bit++ & 7)) {
 		  bits = bitlist[bo++];
 		}
 		if (bits & 0x80) {
-			drawPoint(xpos + xo + xx, ypos + yo + yy, 0xFFFF);
+			if (flip) {
+				drawPoint(xpos + xo + xx, ypos + yo + yy + height, 0xFFFF);
+			} else {
+				drawPoint(xpos - xo - xx + width, ypos - yo - yy, 0x00FF);
+			}
 		}
 		bits <<= 1;
 	  }
