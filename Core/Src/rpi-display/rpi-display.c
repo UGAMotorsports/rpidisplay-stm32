@@ -128,6 +128,9 @@ void initializeScreen() {
 		commandAndData(0x36, data, sizeof(data));
 	}
 	{
+		commandAndData(0x29, NULL, 0);
+	}
+	{
 		uint16_t data[] = {0x0000, 0x0000, (uint16_t)((SCREEN_WIDTH - 1) >> 8), (uint16_t)((SCREEN_WIDTH - 1) & 0xFF)};
 		commandAndData(0x2A, data, sizeof(data));
 	}
@@ -140,9 +143,35 @@ void initializeScreen() {
 		transmitRepeatedData(0x0000, 320 * 480);
 		endCommand();
 	}
+}
+
+void clearScreen(uint16_t color) {
 	{
-		commandAndData(0x29, NULL, 0);
+		uint16_t data[] = {0x0000, 0x0000, (uint16_t)((SCREEN_WIDTH - 1) >> 8), (uint16_t)((SCREEN_WIDTH - 1) & 0xFF)};
+		commandAndData(0x2A, data, sizeof(data));
 	}
+	{
+		uint16_t data[] = {0x0000, 0x0000, (uint16_t)((SCREEN_HEIGHT - 1) >> 8), (uint16_t)((SCREEN_HEIGHT - 1) & 0xFF)};
+		commandAndData(0x2B, data, sizeof(data));
+	}
+	{
+		startCommand(0x2C);
+		transmitRepeatedData(color, 320 * 480);
+		endCommand();
+	}
+}
+
+void clearScreenfast(uint16_t color) {
+	uint16_t buffer1[9600];
+	//uint16_t buffer2[9600];
+	for (int y = 0; y < 2; y++) {
+		for (int x = 0; x < 4; x++) {
+			for (int i = 0; i < 9600; i++) {
+				buffer1[i] = color;
+			}
+		}
+	}
+
 }
 
 /**
@@ -150,13 +179,11 @@ void initializeScreen() {
  */
 void modifySpace(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 	{
-		y2 -= 1;
-		uint16_t data[] = {y1 >> 8, y1 & 0xFF, y2 >> 8, y2 & 0xFF};
+		uint16_t data[] = {(y1 >> 8) & 0xFF, y1 & 0xFF, (y2 >> 8) & 0xFF, y2 & 0xFF};
 		commandAndData(0x2A, data, sizeof(data));
 	}
 	{
-		x2 -= 1;
-		uint16_t data[] = {x1 >> 8, x1 & 0xFF, x2 >> 8, x2 && 0xFF};
+		uint16_t data[] = {(x1 >> 8) & 0xFF, x1 & 0xFF, (x2 >> 8) & 0xFF, x2 & 0xFF};
 		commandAndData(0x2B, data, sizeof(data));
 	}
 }
@@ -253,32 +280,53 @@ void drawEllipseOutline(uint16_t x, uint16_t y, uint16_t length, uint16_t height
 	}
 }
 
-void drawChar(char letter, const GFXfont* font, int16_t xpos, int16_t ypos, uint8_t flip) {
+uint16_t drawChar(char letter, const GFXfont* font, int16_t xpos, int16_t ypos, uint8_t flip) {
 	GFXglyph *toDraw = &((font->glyph)[letter - 32]);
-	int8_t width = toDraw->width, height = toDraw->height;
-	int8_t xo = toDraw->xOffset, yo = toDraw->yOffset;
+	int16_t width = toDraw->width, height = toDraw->height;
+	int16_t xo = toDraw->xOffset, yo = toDraw->yOffset;
 	uint8_t *bitlist = font->bitmap;
 	uint16_t bo = toDraw->bitmapOffset;
 	uint8_t bits = 0;
 	uint8_t bit = 0;
 
-	for (int yy = 0; yy < height; yy++) {
-	  for (int xx = 0; xx < width; xx++) {
+	for (int16_t yy = 0; yy < height; yy++) {
+	  for (int16_t xx = 0; xx < width; xx++) {
 		if (!(bit++ & 7)) {
 		  bits = bitlist[bo++];
 		}
-		if (bits & 0x80) {
+		if (bits & 0b10000000) {
 			if (flip) {
-				drawPoint(xpos + xo + xx, ypos + yo + yy + height, 0xFFFF);
+				drawPoint((uint16_t)(xpos + xo + xx), (uint16_t)(ypos + yo + yy + height), 0xFFFF);
 			} else {
-				drawPoint(xpos - xo - xx + width, ypos - yo - yy, 0x00FF);
+				drawPoint((uint16_t)(xpos - xx + width), (uint16_t)(ypos - yy), 0xFFFF);
 			}
 		}
 		bits <<= 1;
 	  }
 	}
 
+	return (uint16_t)((toDraw->xAdvance));
 }
+
+uint8_t drawString(char *buffer, const GFXfont *font, int16_t xpos, int16_t ypos, uint8_t flip) {
+	uint16_t xAdvance = 0;
+	if (flip) {
+		char *currentChar = buffer;
+		while (*currentChar) {
+			xAdvance += drawChar(*currentChar, font, xpos + xAdvance, ypos, flip);
+			currentChar++;
+		}
+	} else {
+		uint16_t buffersize = 0;
+		while (buffer[buffersize++]) {};
+		for (int i = buffersize - 1; i >= 0; i--) {
+			xAdvance += drawChar(buffer[i], font, xpos + xAdvance, ypos, flip);
+		}
+	}
+	return font->yAdvance;
+}
+
+
 
 
 

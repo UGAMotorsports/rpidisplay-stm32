@@ -18,6 +18,12 @@ const uint8_t no_flip_object = 0;
  */
 void initializeScreen();
 
+/*
+ * will clear the screen to black
+ * @param color The color to clear the screen at.
+ */
+void clearScreen(uint16_t color);
+
 /**
  * resets the screen as if it was power cycled, preferrably run this before you initialize
  */
@@ -47,5 +53,6 @@ void drawRectangleOutline(uint16_t x1, uint16_t y1, uint16_t length, uint16_t he
 void drawEllipseFilled(uint16_t x, uint16_t y, uint16_t length, uint16_t height, uint16_t color);
 void drawEllipseOutline(uint16_t x, uint16_t y, uint16_t length, uint16_t height, uint16_t color);
 void drawChar(char letter, const GFXfont* font, uint16_t xpos, uint16_t ypos, uint8_t flip);
+uint8_t drawString(char *buffer, const GFXfont *font, int16_t xpos, int16_t ypos, uint8_t flip);
 
 #endif /* SRC_RPI_DISPLAY_RPI_DISPLAY_H_ */

@@ -25,8 +25,8 @@
 /* USER CODE BEGIN Includes */
 
 #include "rpi-display/rpi-display.h"
-#include "rpi-display/FreeMono18pt7b.h"
 #include "rpi-display/FreeMonoBold24pt7b.h"
+#include "rpi-display/FreeSans18pt7b.h"
 
 /* USER CODE END Includes */
 
@@ -50,7 +50,7 @@ extern uint8_t CDC_Transmit_FS (uint8_t *data, uint16_t);
 
 /* USER CODE BEGIN PV */
 const GFXfont *font_FreeMonoBold24pt7b = &FreeMonoBold24pt7b;
-
+const GFXfont *font_FreeSans18pt7b = &FreeSans18pt7b;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -110,21 +110,10 @@ int main(void)
 
   resetScreen();
   initializeScreen();
+
   while (1)
   {
-	  drawEllipseFilled(240, 160, 30, 50, 0x0f0a);
-	  HAL_Delay(200);
-	  drawRectangleFilled(50, 50, 40, 60, 0xf00f);
-	  HAL_Delay(200);
-	  drawRectangleFilled(20, 20, 300, 200, 0xff00);
-	  HAL_Delay(200);
-	  for (int i = 0; i < 10; i++) {
-		  drawChar(66 + i, font_FreeMonoBold24pt7b, 50 + (i * 30), 0, flip_object);
-		  drawChar(66 + i, font_FreeMonoBold24pt7b, 50 + (i * 30), 50, no_flip_object);
-	  }
 
-
-	  HAL_Delay(200);
 //	  CDC_Transmit_FS (status, sizeof(status));
     /* USER CODE END WHILE */
 
