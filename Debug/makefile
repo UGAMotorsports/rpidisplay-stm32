@@ -11,6 +11,7 @@ RM := rm -rf
 -include sources.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
+-include Core/Src/stm32-hal-mcp2515/subdir.mk
 -include Core/Src/rpi-display/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk

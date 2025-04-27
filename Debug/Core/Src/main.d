@@ -25,10 +25,14 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
- ../Core/Inc/spi.h ../Core/Inc/main.h ../Core/Inc/gpio.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
+ ../Core/Inc/shiftLights.h ../Core/Inc/main.h ../Core/Inc/dma.h \
+ ../Core/Inc/spi.h ../Core/Inc/tim.h ../Core/Inc/gpio.h \
  ../Core/Src/rpi-display/rpi-display.h ../Core/Src/rpi-display/gfxfont.h \
  ../Core/Src/rpi-display/FreeMonoBold24pt7b.h \
- ../Core/Src/rpi-display/FreeSans18pt7b.h
+ ../Core/Src/rpi-display/FreeSans18pt7b.h ../Core/Src/mcp2515user.h \
+ ../Core/Src/stm32-hal-mcp2515/CAN.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -56,10 +60,17 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
-../Core/Inc/spi.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
+../Core/Inc/shiftLights.h:
 ../Core/Inc/main.h:
+../Core/Inc/dma.h:
+../Core/Inc/spi.h:
+../Core/Inc/tim.h:
 ../Core/Inc/gpio.h:
 ../Core/Src/rpi-display/rpi-display.h:
 ../Core/Src/rpi-display/gfxfont.h:
 ../Core/Src/rpi-display/FreeMonoBold24pt7b.h:
 ../Core/Src/rpi-display/FreeSans18pt7b.h:
+../Core/Src/mcp2515user.h:
+../Core/Src/stm32-hal-mcp2515/CAN.h:
