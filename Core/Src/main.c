@@ -21,6 +21,7 @@
 #include "dma.h"
 #include "spi.h"
 #include "tim.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -29,8 +30,13 @@
 #include "rpi-display/rpi-display.h"
 #include "rpi-display/FreeMonoBold24pt7b.h"
 #include "rpi-display/FreeSans18pt7b.h"
+#include "shiftLights.h"
+#include <stdio.h>
 
 #include "mcp2515user.h"
+
+#include "stm32f4xx_hal.h"
+
 
 /* USER CODE END Includes */
 
@@ -102,6 +108,7 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI2_Init();
   MX_TIM4_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   for (int i = 0; i < 5; i++) {
 	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
@@ -119,9 +126,9 @@ int main(void)
   initializeScreen();
 
   char *uga = "uga motorsports";
-  drawString(uga, font_FreeSans18pt7b, 10, 100, no_flip_object);
+  drawString(uga, font_FreeSans18pt7b, 240, 160, NO_FLIP_OBJECT | CENTER_OBJECT);
   HAL_Delay(200);
-  clearScreen(0x0000);
+  clearScreenfast(0x0000);
   initializeMCP2515();
   uint8_t ledcolors[3 * 16];
   uint16_t ledbytes[(16 * 24) + 150];
@@ -130,6 +137,7 @@ int main(void)
   shiftLightsInit(&htim4, TIM_CHANNEL_1, ledcolors, ledbytes);
   HAL_Delay(500);
   startUp(&htim4, TIM_CHANNEL_1, ledcolors, ledbytes);
+  clearScreen(0x0000);
 
   struct can_frame frame;
 
@@ -143,19 +151,21 @@ int main(void)
 			  char result[20];
 			  itoa(rpm, (char*)(result), 10);
 			  drawRectangleFilled(180, 60, 140, 40, 0x0000);
-			  drawString(result, font_FreeSans18pt7b, 30, 100, no_flip_object);
+			  drawString(result, font_FreeSans18pt7b, 30, 100, NO_FLIP_OBJECT);
 		  } else if (frame.can_id == 1513){
 			  uint16_t temp = (((uint16_t)frame.data[4]) << 8) + frame.data[5];
 			  char result[20];
 			  itoa(temp, result, 10);
 			  drawRectangleFilled(180, 20, 140, 40, 0x0000);
-			  drawString(result, font_FreeSans18pt7b, 30, 50, no_flip_object);
+			  drawString(result, font_FreeSans18pt7b, 30, 50, NO_FLIP_OBJECT);
 		  }
 	  }
-	  char *buffer = "0";
 
 
-
+	  clearScreenfast(0x0000);
+	  HAL_Delay(500);
+	  clearScreenfast(0xF800);
+	  HAL_Delay(500);
 
 //	  CDC_Transmit_FS (status, sizeof(status));
     /* USER CODE END WHILE */
@@ -187,8 +197,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 25;
-  RCC_OscInitStruct.PLL.PLLN = 168;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLN = 336;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 7;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {

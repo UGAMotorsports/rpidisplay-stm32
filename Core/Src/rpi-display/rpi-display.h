@@ -9,9 +9,18 @@
 #define SRC_RPI_DISPLAY_RPI_DISPLAY_H_
 
 #include "gfxfont.h"
+#include <stdint.h>
 
-const uint8_t flip_object = 1;
-const uint8_t no_flip_object = 0;
+/*
+ * flags for object, you OR together the ones you want, and give the result to a drawing function
+ */
+
+#define FLIP_OBJECT 0b00000001
+#define NO_FLIP_OBJECT 0b00000000
+#define CENTER_OBJECT 0b00000010
+#define NO_CENTER_OBJECT 0b00000000
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 480
 
 /**
  * initializes the screen, run this before ever doing anything else with the screen
@@ -23,6 +32,12 @@ void initializeScreen();
  * @param color The color to clear the screen at.
  */
 void clearScreen(uint16_t color);
+
+/**
+ * Clears the screen much faster, uses DMA to accomplish this.
+ * @param color This is the color to clear the screen with.
+ */
+void clearScreenfast(uint16_t color);
 
 /**
  * resets the screen as if it was power cycled, preferrably run this before you initialize
@@ -47,12 +62,74 @@ void drawVLine(uint16_t x1, uint16_t y1, uint16_t height, uint16_t color);
  */
 void drawHLine(uint16_t x1, uint16_t y1, uint16_t height, uint16_t color);
 
+/**
+ * draws a single pixel
+ * @param x This is the x coordinate of the pixel
+ * @param y This is the y coordinate of the pixel
+ * @param color This is the color the pixel should be;
+ */
 void drawPoint(uint16_t x, uint16_t y, uint16_t color);
+
+/**
+ * Draws a solid rectangle
+ * @param x1 This is the x coordinate of the rectangle;
+ * @param y1 This is the y coordinate of the rectangle
+ * @param length This is the length of the rectangle
+ * @param height This is the height of the rectangle
+ * @param uint16_t color This is the color of the rectangle
+ */
 void drawRectangleFilled(uint16_t x1, uint16_t y1, uint16_t length, uint16_t height, uint16_t color);
+
+/**
+ * Draws an outline of a rectangle
+ * @param x1 This is the x coordinate of the rectangle;
+ * @param y1 This is the y coordinate of the rectangle
+ * @param length This is the length of the rectangle
+ * @param height This is the height of the rectangle
+ * @param uint16_t color This is the color of the rectangle
+ */
 void drawRectangleOutline(uint16_t x1, uint16_t y1, uint16_t length, uint16_t height, uint16_t color);
+
+/**
+ * Draws a solid ellipse
+ * @param x1 This is the x coordinate of the ellipse;
+ * @param y1 This is the y coordinate of the ellipse
+ * @param length This is the length of the ellipse
+ * @param height This is the height of the ellipse
+ * @param uint16_t color This is the color of the ellipse
+ */
 void drawEllipseFilled(uint16_t x, uint16_t y, uint16_t length, uint16_t height, uint16_t color);
+
+/**
+ * Draws an ellipse outline
+ * @param x1 This is the x coordinate of the ellipse;
+ * @param y1 This is the y coordinate of the ellipse
+ * @param length This is the length of the ellipse
+ * @param height This is the height of the ellipse
+ * @param uint16_t color This is the color of the ellipse
+ */
 void drawEllipseOutline(uint16_t x, uint16_t y, uint16_t length, uint16_t height, uint16_t color);
-void drawChar(char letter, const GFXfont* font, uint16_t xpos, uint16_t ypos, uint8_t flip);
-uint8_t drawString(char *buffer, const GFXfont *font, int16_t xpos, int16_t ypos, uint8_t flip);
+
+/**
+ * Draws a single letter
+ * @param letter This is the character to draw
+ * @param font This is a pointer to an Arduino GFX font.
+ * @param xpos This is the xpos of the char to draw
+ * @param ypos This is the ypos of the char to draw
+ * @param positioning This is the flags to set how to position the char at the given coordinates
+ * @return the width of the character (used to know where to draw the next character in a string)
+ */
+uint16_t drawChar(char letter, const GFXfont* font, uint16_t xpos, uint16_t ypos, uint8_t positioning);
+
+/**
+ * Draws a string on the screen
+ * @param buffer The buffer of chars to draw
+ * @param font This is a pointer to an Arduino GFX font
+ * @param xpos This is the xpos to draw the string at
+ * @param ypos This is the ypos to draw the string at
+ * @param positioning This is the flags to set how to position the string at the given coordinates
+ * @return the distance down to draw a new line of text
+ */
+uint8_t drawString(char *buffer, const GFXfont *font, uint16_t xpos, uint16_t ypos, uint8_t positioning);
 
 #endif /* SRC_RPI_DISPLAY_RPI_DISPLAY_H_ */

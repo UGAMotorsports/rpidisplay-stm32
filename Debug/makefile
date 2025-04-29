@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (12.3.rel1)
+# Toolchain: GNU Tools for STM32 (13.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -9,6 +9,10 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include USB_DEVICE/Target/subdir.mk
+-include USB_DEVICE/App/subdir.mk
+-include Middlewares/ST/STM32_USB_Device_Library/Core/Src/subdir.mk
+-include Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/stm32-hal-mcp2515/subdir.mk
@@ -86,8 +90,8 @@ all: main-build
 main-build: stm32-spidisplay.elf secondary-outputs
 
 # Tool invocations
-stm32-spidisplay.elf stm32-spidisplay.map: $(OBJS) $(USER_OBJS) C:\Users\bharg\STM32CubeIDE\workspace_1.17.0\stm32-spidisplay\STM32F401CCUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "stm32-spidisplay.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\bharg\STM32CubeIDE\workspace_1.17.0\stm32-spidisplay\STM32F401CCUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32-spidisplay.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+stm32-spidisplay.elf stm32-spidisplay.map: $(OBJS) $(USER_OBJS) /home/bhargav/STM32CubeIDE/workspace_1.18.0/stm32-spidisplay/STM32F401CCUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "stm32-spidisplay.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/bhargav/STM32CubeIDE/workspace_1.18.0/stm32-spidisplay/STM32F401CCUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32-spidisplay.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
