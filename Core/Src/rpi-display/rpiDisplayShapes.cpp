@@ -5,26 +5,26 @@
  *      Author: bharg
  */
 
-#include "rpi-display.h"
+#include "rpiDisplayShapes.h"
 
+#include "gfxfont.h"
 #include "gpio.h"
 #include "spi.h"
 
-#include "gfxfont.h"
 
 void startTransaction() {
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
 }
 
 void endTransaction() {
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);
 }
 
 void dataOrRegister(uint8_t data) {
 	if (data) {
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
 	} else {
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
 	}
 }
 
@@ -65,11 +65,11 @@ void endCommand() {
 }
 
 void resetScreen() {
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
 	HAL_Delay(20);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
 	HAL_Delay(20);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
 	HAL_Delay(100);
 }
 
@@ -159,22 +159,43 @@ void clearScreen(uint16_t color) {
 }
 
 /**
- * Final pixel in row/column is one less than x2/y2
+ * x2 and y2 are included in the pixels, (ex: 0 to 8 includes 0 and 8 so this is 9 pixels)
  */
 void modifySpace(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 	{
-		uint16_t data[] = {(y1 >> 8) & 0xFF, y1 & 0xFF, (y2 >> 8) & 0xFF, y2 & 0xFF};
+		uint16_t data[] = {(y1 >> 8) & 0x00FF, y1 & 0x00FF, (y2 >> 8) & 0x00FF, y2 & 0x00FF};
 		commandAndData(0x2A, data, sizeof(data));
 	}
 	{
-		uint16_t data[] = {(x1 >> 8) & 0xFF, x1 & 0xFF, (x2 >> 8) & 0xFF, x2 & 0xFF};
+		uint16_t data[] = {(x1 >> 8) & 0x00FF, x1 & 0x00FF, (x2 >> 8) & 0x00FF, x2 & 0x00FF};
 		commandAndData(0x2B, data, sizeof(data));
 	}
 }
 
-/**
- * must be used in ocnjunction with modifySpace()
- */
+static uint8_t datasentflag = 0;
+void clearScreenfast(uint16_t color) {
+	uint16_t buffer1[19200];
+	for (int i = 0; i < 19200; i++) {
+		buffer1[i] = color;
+	}
+	modifySpace(0, 0, 479, 319);
+	startCommand(0x2C);
+	dataOrRegister(1);
+	for (int i = 0; i < 8; i++) {
+		HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*)buffer1, 19200);
+		while (!datasentflag) {}
+		datasentflag = 0;
+	}
+	endCommand();
+}
+
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	if (hspi->Instance == SPI1) {
+		datasentflag = 1;
+	}
+}
+
 
 void fillArea(uint16_t x1, uint16_t y1, uint16_t length, uint16_t height, uint16_t color) {
 	modifySpace(x1, y1, x1 + length, y1 + height);
@@ -209,31 +230,6 @@ void drawRectangleOutline(uint16_t x1, uint16_t y1, uint16_t length, uint16_t he
 	drawVLine(x1 + length, y1, height, color);
 	drawHLine(x1, y1, length, color);
 	drawHLine(x1, y1 + height, length, color);
-}
-
-
-uint8_t datasentflagspi = 0;
-void clearScreenfast(uint16_t color) {
-	uint16_t buffer1[19200];
-	for (int i = 0; i < 19200; i++) {
-		buffer1[i] = color;
-	}
-	modifySpace(0, 0, 479, 319);
-	startCommand(0x2C);
-	dataOrRegister(1);
-	for (int i = 0; i < 8; i++) {
-		HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*)buffer1, 19200);
-		while (!datasentflagspi) {}
-		datasentflagspi = 0;
-	}
-	endCommand();
-}
-
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	if (hspi->Instance == SPI1) {
-		datasentflagspi = 1;
-	}
 }
 
 /**
@@ -289,7 +285,7 @@ void drawEllipseOutline(uint16_t x, uint16_t y, uint16_t length, uint16_t height
 	}
 }
 
-uint16_t getStringCenter(char *buffer, const GFXfont *font, uint16_t currentx) {
+void getStringCenter(uint16_t *currentx, uint16_t *currenty, char *buffer, const GFXfont *font) {
 	char *currentletter = buffer;
 
 	uint16_t totallength = 0;
@@ -298,13 +294,15 @@ uint16_t getStringCenter(char *buffer, const GFXfont *font, uint16_t currentx) {
 		totallength += (uint16_t)(letter->xAdvance);
 		currentletter++;
 	}
-	return currentx - (totallength / 2);
+	*currentx -= totallength / 2;
+	//*currenty += font->yAdvance / 2;
 }
 
 uint16_t drawChar(char letter, const GFXfont *font, uint16_t xpos, uint16_t ypos, uint8_t positioning) {
 	GFXglyph *toDraw = &((font->glyph)[letter - 32]);
 	int16_t width = toDraw->width, height = toDraw->height;
 	int8_t xo = toDraw->xOffset, yo = toDraw->yOffset;
+	int8_t xadv = (int8_t)toDraw->xAdvance;
 	uint8_t *bitlist = font->bitmap;
 	uint16_t bo = toDraw->bitmapOffset;
 	uint8_t bits = 0;
@@ -319,19 +317,19 @@ uint16_t drawChar(char letter, const GFXfont *font, uint16_t xpos, uint16_t ypos
 			if (positioning & FLIP_OBJECT) {
 				drawPoint((uint16_t)((int16_t)xpos + xo + xx), (uint16_t)((int16_t)ypos + yo + yy), 0xFFFF);
 			} else {
-				drawPoint((uint16_t)((int16_t)xpos + width - xx), (uint16_t)((int16_t)ypos - yy - yo), 0xFFFF);
+				drawPoint((uint16_t)((int16_t)xpos + xadv - xo - xx), (uint16_t)((int16_t)ypos - yy - yo), 0xFFFF);
 			}
 		}
 		bits <<= 1;
 	  }
 	}
 
-	return toDraw->xAdvance;
+	return (uint16_t)xadv;
 }
 
 uint8_t drawString(char *buffer, const GFXfont *font, uint16_t xpos, uint16_t ypos, uint8_t positioning) {
 	if (positioning & CENTER_OBJECT) {
-		xpos = getStringCenter(buffer, font, xpos);
+		getStringCenter(&xpos, &ypos, buffer, font);
 	}
 	uint16_t xAdvance = 0;
 	if (positioning & FLIP_OBJECT) {

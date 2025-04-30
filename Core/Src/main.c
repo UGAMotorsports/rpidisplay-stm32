@@ -27,13 +27,11 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include "rpi-display/rpi-display.h"
+#include "rpi-display/rpiDisplayShapes.h"
 #include "rpi-display/FreeMonoBold24pt7b.h"
 #include "rpi-display/FreeSans18pt7b.h"
-#include "shiftLights.h"
 #include <stdio.h>
 
-#include "mcp2515user.h"
 
 #include "stm32f4xx_hal.h"
 
@@ -59,8 +57,7 @@ extern uint8_t CDC_Transmit_FS (uint8_t *data, uint16_t);
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-const GFXfont *font_FreeMonoBold24pt7b = &FreeMonoBold24pt7b;
-const GFXfont *font_FreeSans18pt7b = &FreeSans18pt7b;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -126,46 +123,20 @@ int main(void)
   initializeScreen();
 
   char *uga = "uga motorsports";
-  drawString(uga, font_FreeSans18pt7b, 240, 160, NO_FLIP_OBJECT | CENTER_OBJECT);
+  drawString(uga, FREE_SANS_18PT7B, 240, 160, NO_FLIP_OBJECT | CENTER_OBJECT);
   HAL_Delay(200);
   clearScreenfast(0x0000);
-  initializeMCP2515();
-  uint8_t ledcolors[3 * 16];
-  uint16_t ledbytes[(16 * 24) + 150];
-  int G1[12] = {834, 1668, 2502, 3336, 4170, 5004, 5838, 6672, 7506, 8340,
-  9174, 10008};
-  shiftLightsInit(&htim4, TIM_CHANNEL_1, ledcolors, ledbytes);
   HAL_Delay(500);
-  startUp(&htim4, TIM_CHANNEL_1, ledcolors, ledbytes);
   clearScreen(0x0000);
 
-  struct can_frame frame;
+  char rpmresult[20] = "not recieved rpm";
 
   while (1)
   {
-	  int canresult = readMessage(&frame);
-	  if (canresult == 0) {
-		  if (frame.can_id == 1512) {
-			  uint16_t rpm = (((uint16_t)frame.data[2]) << 8) + frame.data[3];
-			  UpdateShiftLights(&htim4, TIM_CHANNEL_1, ledcolors, ledbytes, rpm, G1);
-			  char result[20];
-			  itoa(rpm, (char*)(result), 10);
-			  drawRectangleFilled(180, 60, 140, 40, 0x0000);
-			  drawString(result, font_FreeSans18pt7b, 30, 100, NO_FLIP_OBJECT);
-		  } else if (frame.can_id == 1513){
-			  uint16_t temp = (((uint16_t)frame.data[4]) << 8) + frame.data[5];
-			  char result[20];
-			  itoa(temp, result, 10);
-			  drawRectangleFilled(180, 20, 140, 40, 0x0000);
-			  drawString(result, font_FreeSans18pt7b, 30, 50, NO_FLIP_OBJECT);
-		  }
-	  }
-
 
 	  clearScreenfast(0x0000);
-	  HAL_Delay(500);
-	  clearScreenfast(0xF800);
-	  HAL_Delay(500);
+	  drawString(rpmresult, FREE_MONO_BOLD_24PT7B, 240, 160, NO_FLIP_OBJECT | CENTER_OBJECT);
+	  //drawString(tempresult, font_FreeSans18pt7b, 240, 180, NO_FLIP_OBJECT | CENTER_OBJECT);
 
 //	  CDC_Transmit_FS (status, sizeof(status));
     /* USER CODE END WHILE */
