@@ -30,6 +30,7 @@
 #include "rpi-display/rpiDisplayShapes.h"
 #include "rpi-display/FreeMonoBold24pt7b.h"
 #include "rpi-display/FreeSans18pt7b.h"
+#include "rpi-display/rpiSceneBuilderUser.h"
 #include <stdio.h>
 
 
@@ -103,40 +104,24 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_SPI1_Init();
-  MX_SPI2_Init();
   MX_TIM4_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-  for (int i = 0; i < 5; i++) {
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
-	  HAL_Delay(100);
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
-	  HAL_Delay(100);
-  }
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
   resetScreen();
   initializeScreen();
-
-  char *uga = "uga motorsports";
-  drawString(uga, FREE_SANS_18PT7B, 240, 160, NO_FLIP_OBJECT | CENTER_OBJECT);
-  HAL_Delay(200);
-  clearScreenfast(0x0000);
-  HAL_Delay(500);
-  clearScreen(0x0000);
-
-  char rpmresult[20] = "not recieved rpm";
-
+  dosplashscene();
+  HAL_Delay(4000);
   while (1)
   {
 
-	  clearScreenfast(0x0000);
-	  drawString(rpmresult, FREE_MONO_BOLD_24PT7B, 240, 160, NO_FLIP_OBJECT | CENTER_OBJECT);
-	  //drawString(tempresult, font_FreeSans18pt7b, 240, 180, NO_FLIP_OBJECT | CENTER_OBJECT);
+	  dootherstring();
+	  HAL_Delay(400);
+	  dostring();
+	  HAL_Delay(400);
 
 //	  CDC_Transmit_FS (status, sizeof(status));
     /* USER CODE END WHILE */

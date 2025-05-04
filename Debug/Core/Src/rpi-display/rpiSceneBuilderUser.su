@@ -1,0 +1,4 @@
+../Core/Src/rpi-display/rpiSceneBuilderUser.cpp:17:6:void dostring()	51224	static
+../Core/Src/rpi-display/rpiSceneBuilderUser.cpp:35:6:void dootherstring()	51224	static
+../Core/Src/rpi-display/rpiSceneBuilderUser.cpp:48:1:void __static_initialization_and_destruction_0()	32	static
+../Core/Src/rpi-display/rpiSceneBuilderUser.cpp:48:1:cpp)	8	static

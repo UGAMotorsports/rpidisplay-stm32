@@ -1,2 +1,21 @@
-../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:13:1:DisplayObject::DisplayObject(uint8_t, uint8_t (*)(uint16_t, uint16_t))	1
-../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:18:6:void createobject()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.h:16:10:DisplayObject::~DisplayObject()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.h:16:10:virtual DisplayObject::~DisplayObject()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:14:6:void DisplayObject::resetChangeFlag()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:18:6:void DisplayObject::redrawObject()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:22:10:uint16_t DisplayObject::getxpos()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:26:6:void DisplayObject::setxpos(uint16_t)	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:30:10:uint16_t DisplayObject::getypos()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:34:6:void DisplayObject::setypos(uint16_t)	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:38:9:uint8_t DisplayObject::getpriority()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:42:6:void DisplayObject::setpriority(uint8_t)	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.h:14:7:DisplayObject::DisplayObject()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:50:1:StringObject::StringObject(uint16_t, uint16_t, uint16_t, const GFXfont*, uint8_t, char*, uint8_t)	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:60:10:virtual uint16_t StringObject::drawIntoFramebuffer(uint16_t*, uint16_t, uint16_t)	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:64:6:void StringObject::updateString(char*, uint8_t, uint16_t, GFXfont*, uint16_t, uint16_t, uint8_t)	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:79:1:FilledRectObject::FilledRectObject(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint8_t)	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:88:10:virtual uint16_t FilledRectObject::drawIntoFramebuffer(uint16_t*, uint16_t, uint16_t)	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.cpp:93:6:void FilledRectObject::updateRect(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.h:56:7:FilledRectObject::~FilledRectObject()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.h:56:7:virtual FilledRectObject::~FilledRectObject()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.h:44:7:StringObject::~StringObject()	1
+../Core/Src/rpi-display/rpiDisplaySceneBuilder.h:44:7:virtual StringObject::~StringObject()	1

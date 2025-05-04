@@ -1,0 +1,4 @@
+../Core/Src/rpi-display/rpiSceneBuilderUser.cpp:36:6:void dostring()	1
+../Core/Src/rpi-display/rpiSceneBuilderUser.cpp:41:6:void dootherstring()	1
+../Core/Src/rpi-display/rpiSceneBuilderUser.cpp:46:6:void dosplashscene()	1
+../Core/Src/rpi-display/rpiSceneBuilderUser.cpp:49:1:cpp)	1
